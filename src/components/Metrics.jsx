@@ -1,0 +1,124 @@
+import { useEffect, useRef, useState } from "react";
+import { animate } from "animejs";
+import { motion, useInView } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
+import SectionHeading from "./SectionHeading";
+import Reveal from "./Reveal";
+
+function Counter({ value, decimals = 0, prefix = "", suffix = "" }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const counter = { value: 0 };
+    const animation = animate(counter, {
+      value,
+      duration: 2200,
+      ease: "outExpo",
+      onUpdate: () => setDisplay(counter.value),
+    });
+    return () => animation.pause();
+  }, [inView, value]);
+
+  const formatted = decimals
+    ? display.toFixed(decimals)
+    : Math.round(display).toLocaleString("en-US");
+
+  return (
+    <span ref={ref} className="counter">
+      {prefix}
+      {formatted}
+      {suffix}
+    </span>
+  );
+}
+
+const stats = [
+  {
+    value: 12000,
+    suffix: "+",
+    label: "Teams building on Axon",
+    note: "From seed-stage to the Fortune 500.",
+  },
+  {
+    value: 1.4,
+    decimals: 1,
+    suffix: "B",
+    label: "Tasks automated",
+    note: "And counting, every single second.",
+  },
+  {
+    value: 10,
+    suffix: "×",
+    label: "Faster to shipped",
+    note: "Median velocity gain in 90 days.",
+  },
+  {
+    value: 99.99,
+    decimals: 2,
+    suffix: "%",
+    label: "Platform uptime",
+    note: "Backed by a 99.99% SLA.",
+  },
+];
+
+export default function Metrics() {
+  return (
+    <section className="metrics-section" aria-label="Axon by the numbers">
+      <div className="metrics-orb" />
+      <div className="metrics-grid-bg" />
+      <div className="container">
+        <SectionHeading
+          eyebrow="THE COMPOUND EFFECT"
+          index="03"
+          align="center"
+          title={
+            <>
+              Momentum, <em>measured.</em>
+            </>
+          }
+          description="When intelligence becomes infrastructure, the results stop being incremental."
+        />
+
+        <div className="metrics-grid">
+          {stats.map((stat, index) => (
+            <motion.div
+              className="metric-card"
+              key={stat.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.8, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="metric-index mono-label">0{index + 1}</span>
+              <div className="metric-value">
+                <Counter
+                  value={stat.value}
+                  decimals={stat.decimals}
+                  suffix={stat.suffix}
+                />
+              </div>
+              <strong>{stat.label}</strong>
+              <p>{stat.note}</p>
+              <span className="metric-spark">
+                <i /><i /><i /><i /><i /><i /><i />
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        <Reveal className="metrics-footer" delay={0.1}>
+          <div className="metrics-footer-copy">
+            <span className="status-pulse" />
+            <span>Live platform data · updated 12 seconds ago</span>
+          </div>
+          <a href="#customers" className="text-link" data-cursor>
+            Read the customer stories <ArrowUpRight size={15} />
+          </a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}

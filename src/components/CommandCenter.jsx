@@ -1,0 +1,483 @@
+import { useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+} from "motion/react";
+import {
+  Activity,
+  ArrowRight,
+  ArrowUpRight,
+  Bell,
+  Bot,
+  Check,
+  CircleCheck,
+  Command,
+  Cpu,
+  Database,
+  LayoutDashboard,
+  Mail,
+  MoreHorizontal,
+  Play,
+  Plus,
+  Search,
+  Send,
+  Settings,
+  Sparkles,
+  Users,
+  Workflow,
+  Zap,
+} from "lucide-react";
+
+const steps = [
+  {
+    number: "01",
+    title: "Describe the outcome.",
+    copy: "Talk to Axon like a teammate. It translates intent into a complete execution plan — no diagrams required.",
+  },
+  {
+    number: "02",
+    title: "Orchestrate the work.",
+    copy: "Watch specialist agents divide, reason, and run in parallel. Every decision is visible and editable.",
+  },
+  {
+    number: "03",
+    title: "Ship with confidence.",
+    copy: "Monitor live performance, approve edge cases, and scale what works — all from one command center.",
+  },
+];
+
+function PromptPanel() {
+  return (
+    <motion.div
+      className="dash-panel dash-panel--prompt"
+      initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="prompt-header">
+        <span className="prompt-orb">
+          <Sparkles size={16} />
+        </span>
+        <div>
+          <span className="mono-label">NEW AUTOMATION</span>
+          <h5>What should your agents do?</h5>
+        </div>
+        <span className="shortcut mono-label">⌘ K</span>
+      </div>
+
+      <div className="prompt-input">
+        <span className="prompt-caret-line">
+          Research <mark>50 qualified leads</mark>, enrich their profiles with
+          recent funding and hiring signals, then draft a personalized outreach
+          sequence for each.
+          <i className="typing-caret" />
+        </span>
+        <div className="prompt-tools">
+          <div className="prompt-tool-chips">
+            <span><Bot size={12} /> Axon-2</span>
+            <span><Database size={12} /> CRM</span>
+            <span><Mail size={12} /> Gmail</span>
+          </div>
+          <button type="button" className="prompt-send">
+            <ArrowUpRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className="prompt-response">
+        <span className="response-avatar">λ</span>
+        <div>
+          <div className="response-meta">
+            <strong>Axon</strong>
+            <span>just now</span>
+          </div>
+          <p>
+            I&apos;ll assemble a 4-agent workflow and connect CRM + Gmail.
+            Estimated completion: <strong>3m 42s</strong>.
+          </p>
+          <div className="response-plan">
+            <span><Check size={10} /> Intent parsed</span>
+            <span><Check size={10} /> Tools linked</span>
+            <span><Check size={10} /> Guardrails set</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="prompt-suggestions">
+        <button type="button"><Zap size={12} /> Build a research agent</button>
+        <button type="button"><Workflow size={12} /> Automate onboarding</button>
+        <button type="button"><Send size={12} /> Draft campaigns</button>
+      </div>
+
+      <div className="prompt-footer">
+        <div className="prompt-status">
+          <span className="ai-dots"><i /><i /><i /></span>
+          <span>Understanding intent</span>
+        </div>
+        <button type="button" className="dash-primary">
+          Generate workflow <ArrowRight size={14} />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+function CanvasPanel() {
+  const nodes = [
+    { id: "trigger", label: "Lead intake", type: "Trigger", icon: Zap, x: 5, y: 43, status: "Done" },
+    { id: "research", label: "Researcher", type: "Agent", icon: Bot, x: 29, y: 18, status: "Running" },
+    { id: "qualify", label: "Qualifier", type: "Agent", icon: Cpu, x: 29, y: 65, status: "Running" },
+    { id: "enrich", label: "Enrichment", type: "Data", icon: Database, x: 55, y: 41, status: "Running" },
+    { id: "outreach", label: "Outreach", type: "Action", icon: Mail, x: 79, y: 20, status: "Queued" },
+    { id: "crm", label: "CRM sync", type: "Action", icon: Activity, x: 79, y: 67, status: "Queued" },
+  ];
+
+  return (
+    <motion.div
+      className="dash-panel dash-panel--canvas"
+      initial={{ opacity: 0, scale: 0.985 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.985 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="canvas-toolbar">
+        <div className="canvas-title">
+          <span className="mono-label">WORKFLOW</span>
+          <strong>Lead intelligence v3</strong>
+        </div>
+        <div className="canvas-actions">
+          <span className="run-pill"><span className="status-pulse" /> RUNNING</span>
+          <button type="button"><Play size={13} fill="currentColor" /> Run</button>
+          <button type="button" className="icon-button"><MoreHorizontal size={16} /></button>
+        </div>
+      </div>
+
+      <div className="workflow-canvas">
+        <span className="workflow-grid" />
+        <svg viewBox="0 0 700 370" fill="none" preserveAspectRatio="none" className="workflow-lines">
+          <defs>
+            <linearGradient id="dashLine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#c8ff3d" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#c8ff3d" stopOpacity="0.65" />
+            </linearGradient>
+          </defs>
+          <path d="M135 195 C205 195 175 102 244 102" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+          <path d="M135 195 C205 195 175 274 244 274" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+          <path d="M327 102 C395 102 379 185 438 185" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+          <path d="M327 274 C395 274 379 185 438 185" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+          <path d="M520 185 C584 185 552 108 625 108" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+          <path d="M520 185 C584 185 552 262 625 262" stroke="url(#dashLine)" strokeWidth="1.5" strokeDasharray="5 6" />
+        </svg>
+
+        {nodes.map(({ id, label, type, icon: Icon, x, y, status }, index) => (
+          <motion.div
+            className={`wf-node ${id === "enrich" ? "is-active" : ""}`}
+            key={id}
+            style={{ left: `${x}%`, top: `${y}%` }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.08 + index * 0.06, duration: 0.4 }}
+          >
+            <div className="wf-node-head">
+              <span className={`wf-icon wf-icon--${type.toLowerCase()}`}>
+                <Icon size={13} />
+              </span>
+              <span className="wf-status-dot" data-status={status} />
+            </div>
+            <strong>{label}</strong>
+            <span className="mono-label">{type}</span>
+          </motion.div>
+        ))}
+
+        <div className="canvas-run-card">
+          <div className="canvas-run-head">
+            <span className="mono-label">RUN #4821</span>
+            <span>14 tasks · 3m 42s</span>
+          </div>
+          <div className="canvas-run-bar">
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: "68%" }}
+              transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </div>
+          <div className="canvas-run-meta">
+            <span><span className="status-pulse" /> 5 agents active</span>
+            <span>68% complete</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ResultsPanel() {
+  const days = [42, 58, 46, 72, 64, 88, 96];
+
+  return (
+    <motion.div
+      className="dash-panel dash-panel--results"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="deploy-banner">
+        <span className="deploy-check"><CircleCheck size={22} /></span>
+        <div>
+          <span className="mono-label">PRODUCTION</span>
+          <h5>Workflow is live.</h5>
+          <p>Shipped in 3m 42s. Your agents are already working.</p>
+        </div>
+        <button type="button" className="dash-primary">
+          Open monitor <ArrowUpRight size={14} />
+        </button>
+      </div>
+
+      <div className="result-metrics">
+        <div className="result-metric">
+          <span className="mono-label">TIME SAVED</span>
+          <strong>38.4<span>h</span></strong>
+          <small className="is-positive">+24% this week</small>
+        </div>
+        <div className="result-metric">
+          <span className="mono-label">QUALIFIED LEADS</span>
+          <strong>1,284</strong>
+          <small className="is-positive">+18.2%</small>
+        </div>
+        <div className="result-metric">
+          <span className="mono-label">REPLY RATE</span>
+          <strong>42.7<span>%</span></strong>
+          <small className="is-positive">3.4× baseline</small>
+        </div>
+      </div>
+
+      <div className="results-lower">
+        <div className="results-chart-card">
+          <div className="results-chart-head">
+            <div>
+              <span className="mono-label">THROUGHPUT</span>
+              <strong>2,481 tasks</strong>
+            </div>
+            <span className="chart-legend"><i /> LAST 7 DAYS</span>
+          </div>
+          <div className="results-bars">
+            {days.map((height, index) => (
+              <span key={index}>
+                <motion.i
+                  initial={{ scaleY: 0, opacity: 0 }}
+                  animate={{ scaleY: height / 100, opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 0.15 + index * 0.045, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </span>
+            ))}
+          </div>
+          <div className="results-days mono-label">
+            <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+          </div>
+        </div>
+
+        <div className="results-log">
+          <div className="results-log-head">
+            <span className="mono-label">ACTIVITY LOG</span>
+            <span className="live-pill"><span className="status-pulse" /> LIVE</span>
+          </div>
+          {[
+            { icon: Check, title: "Outreach batch sent", time: "2s ago", tone: "lime" },
+            { icon: Database, title: "CRM records synced", time: "12s ago", tone: "blue" },
+            { icon: Bot, title: "Agent 04 enriched 50 leads", time: "38s ago", tone: "white" },
+            { icon: ShieldIcon, title: "Guardrail check passed", time: "1m ago", tone: "lime" },
+          ].map(({ icon: Icon, title, time, tone }) => (
+            <div className="log-row" key={title}>
+              <span className={`log-icon log-icon--${tone}`}><Icon size={12} /></span>
+              <span>{title}</span>
+              <time>{time}</time>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ShieldIcon({ size = 12 }) {
+  return <Check size={size} />;
+}
+
+function Dashboard({ step }) {
+  return (
+    <div className="dashboard-shell">
+      <div className="dash-browser">
+        <div className="dash-dots">
+          <span /><span /><span />
+        </div>
+        <div className="dash-url">
+          <span className="url-lock">◇</span>
+          axon.app/command
+        </div>
+        <span className="dash-browser-meta mono-label">SECURE</span>
+      </div>
+
+      <div className="dash-app">
+        <aside className="dash-sidebar">
+          <span className="dash-logo">
+            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M6.5 21.5 14 5l7.5 16.5h-4.1L14 13.3l-3.4 8.2H6.5Z" fill="currentColor" />
+              <circle cx="21.4" cy="6.3" r="2.1" fill="currentColor" />
+            </svg>
+          </span>
+          <div className="dash-side-icons">
+            <span className="is-active"><LayoutDashboard size={15} /></span>
+            <span><Workflow size={15} /></span>
+            <span><Bot size={15} /></span>
+            <span><Database size={15} /></span>
+            <span><Users size={15} /></span>
+          </div>
+          <span className="dash-side-bottom"><Settings size={15} /></span>
+        </aside>
+
+        <div className="dash-main">
+          <div className="dash-header">
+            <div className="dash-workspace">
+              <span className="workspace-avatar">A</span>
+              <div>
+                <span className="mono-label">ATLAS LABS</span>
+                <strong>Command center</strong>
+              </div>
+            </div>
+            <div className="dash-header-actions">
+              <span className="dash-search"><Search size={13} /> <span>Search</span> <kbd>⌘K</kbd></span>
+              <span className="dash-notification"><Bell size={14} /><i /></span>
+              <span className="dash-user">AM</span>
+            </div>
+          </div>
+
+          <div className="dash-content">
+            <div className="dash-page-head">
+              <div>
+                <span className="mono-label">WORKSPACE / AUTOMATIONS</span>
+                <h4>
+                  {step === 0 && "Create something brilliant."}
+                  {step === 1 && "Your agents are in motion."}
+                  {step === 2 && "Everything is working."}
+                </h4>
+              </div>
+              <div className="dash-page-actions">
+                <span className="live-pill"><span className="status-pulse" /> LIVE</span>
+                <button type="button" className="dash-secondary"><Plus size={13} /> New</button>
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {step === 0 && <PromptPanel key="prompt" />}
+              {step === 1 && <CanvasPanel key="canvas" />}
+              {step === 2 && <ResultsPanel key="results" />}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CommandCenter() {
+  const sectionRef = useRef(null);
+  const [step, setStep] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 28,
+    restDelta: 0.001,
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    const next = Math.min(2, Math.floor(value * 3.12));
+    setStep((current) => (current === next ? current : next));
+  });
+
+  const goToStep = (index) => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const total = section.offsetHeight - window.innerHeight;
+    const points = [0.08, 0.43, 0.78];
+    const top = section.offsetTop + total * points[index];
+    if (window.__lenis) {
+      window.__lenis.scrollTo(top, { duration: 1.4 });
+    } else {
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <section className="command-section" id="platform" ref={sectionRef}>
+      <div className="command-sticky">
+        <div className="command-bg" />
+        <div className="command-noise" />
+        <div className="container command-layout">
+          <div className="command-side">
+            <div className="section-kicker">
+              <span className="section-kicker-dot" />
+              <span className="mono-label">THE COMMAND CENTER</span>
+              <span className="section-index mono-label">02 / 04</span>
+            </div>
+
+            <h2 className="command-title">
+              From prompt to production.
+              <br />
+              <em>In seconds.</em>
+            </h2>
+
+            <p className="command-lede">
+              The first workspace designed for human ambition and machine speed.
+              One intent becomes an entire operating system.
+            </p>
+
+            <div className="command-steps">
+              {steps.map((item, index) => (
+                <button
+                  type="button"
+                  className={`command-step ${step === index ? "is-active" : ""}`}
+                  key={item.number}
+                  onClick={() => goToStep(index)}
+                >
+                  <span className="command-step-num mono-label">{item.number}</span>
+                  <span className="command-step-copy">
+                    <strong>{item.title}</strong>
+                    <span>{item.copy}</span>
+                  </span>
+                  <span className="command-step-indicator">
+                    <ArrowUpRight size={14} />
+                  </span>
+                </button>
+              ))}
+              <span className="command-progress">
+                <motion.span style={{ scaleY: progress }} />
+              </span>
+            </div>
+
+            <div className="command-meta">
+              <span className="mono-label"><Command size={13} /> BUILT FOR OPERATORS</span>
+              <span className="mono-label">NO-CODE + API</span>
+            </div>
+          </div>
+
+          <div className="command-visual">
+            <div className="command-visual-glow" />
+            <Dashboard step={step} />
+            <div className="visual-caption">
+              <span><span className="status-pulse" /> SYSTEM OPERATIONAL</span>
+              <span className="mono-label">LATENCY 82MS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
