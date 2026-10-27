@@ -115,7 +115,7 @@ export default function Footer() {
         </Reveal>
 
         <div className="footer-wordmark-wrap">
-          <div className="footer-wordmark" aria-hidden="true">AXON</div>
+          <div className="footer-wordmark" data-text="AXON" aria-hidden="true">AXON</div>
           <div className="footer-wordmark-glow" />
         </div>
 
