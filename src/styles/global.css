@@ -734,6 +734,325 @@ ol {
   opacity: 0.55;
 }
 
+/* Cinematic preloader */
+.preloader {
+  padding: 30px 40px 32px;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(200, 255, 61, 0.055), transparent 44%),
+    #040604;
+}
+
+.preloader-canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.preloader-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.preloader-flare {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 44%,
+    rgba(244, 255, 212, 0.95) 0%,
+    rgba(200, 255, 61, 0.55) 12%,
+    rgba(200, 255, 61, 0.16) 27%,
+    transparent 54%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.preloader-center {
+  width: min(920px, 88vw);
+}
+
+.preloader-center-label {
+  margin-bottom: clamp(4px, 1.2vh, 16px);
+  letter-spacing: 0.3em;
+}
+
+.preloader-hero {
+  position: relative;
+  display: grid;
+  height: clamp(210px, 38vh, 390px);
+  margin-bottom: clamp(8px, 1.6vh, 20px);
+  place-items: center;
+}
+
+.preloader-hero-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(46vh, 420px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ph-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ph-ring--one {
+  inset: 0;
+  border: 1px solid rgba(200, 255, 61, 0.16);
+  border-right-color: transparent;
+  border-left-color: transparent;
+  animation: ph-spin 18s linear infinite;
+}
+
+.ph-ring--two {
+  inset: 9%;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  animation: ph-spin 34s linear infinite reverse;
+}
+
+.ph-ring--three {
+  inset: 18%;
+  border: 1px solid rgba(200, 255, 61, 0.1);
+}
+
+.ph-ring--progress {
+  inset: -3%;
+  background: conic-gradient(
+    from -90deg,
+    rgba(220, 255, 136, 0.95) calc(var(--boot, 0) * 1turn),
+    rgba(255, 255, 255, 0.05) 0
+  );
+  filter: drop-shadow(0 0 8px rgba(200, 255, 61, 0.45));
+  opacity: 0.9;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+}
+
+.ph-ring--sweep {
+  inset: -3%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 316deg,
+    rgba(200, 255, 61, 0.34) 350deg,
+    transparent 360deg
+  );
+  animation: ph-spin 6.5s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 calc(100% - 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 calc(100% - 1px));
+}
+
+.ph-cross {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(200, 255, 61, 0.11), transparent);
+  opacity: 0.6;
+}
+
+.ph-cross--x {
+  top: 50%;
+  left: -5%;
+  width: 110%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.ph-cross--y {
+  top: -5%;
+  left: 50%;
+  width: 1px;
+  height: 110%;
+  background: linear-gradient(180deg, transparent, rgba(200, 255, 61, 0.11), transparent);
+  transform: translateX(-50%);
+}
+
+.ph-tick {
+  position: absolute;
+  width: 10px;
+  height: 1px;
+  background: rgba(200, 255, 61, 0.5);
+}
+
+.ph-tick--n {
+  top: -1%;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.ph-tick--e {
+  top: 50%;
+  right: -1%;
+  transform: translateY(-50%);
+}
+
+.ph-tick--s {
+  bottom: -1%;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.ph-tick--w {
+  top: 50%;
+  left: -1%;
+  transform: translateY(-50%);
+}
+
+.preloader-counter {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: clamp(96px, 17vw, 260px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.82;
+  text-shadow: 0 0 90px rgba(200, 255, 61, 0.16);
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+  will-change: transform, opacity, filter;
+}
+
+.preloader-odometer {
+  display: flex;
+}
+
+.odometer-digit {
+  position: relative;
+  display: block;
+  width: 0.64em;
+  height: 1em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 87%, transparent 100%);
+}
+
+.odometer-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.odometer-track > span {
+  display: block;
+  height: 1em;
+  text-align: center;
+  line-height: 1;
+}
+
+.preloader-counter-unit {
+  margin: 0.16em 0 0 0.14em;
+  color: var(--lime);
+  font-family: var(--mono);
+  font-size: 0.22em;
+  letter-spacing: 0;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(200, 255, 61, 0.8);
+}
+
+.preloader.is-complete .preloader-counter {
+  color: var(--lime-bright);
+  text-shadow: 0 0 130px rgba(200, 255, 61, 0.55);
+}
+
+.preloader.is-complete .ph-ring--progress {
+  background: conic-gradient(from -90deg, var(--lime) 1turn, var(--lime) 0);
+  filter: drop-shadow(0 0 12px rgba(200, 255, 61, 0.8));
+}
+
+.loader-count.loader-count--compact {
+  font-size: clamp(24px, 2.4vw, 34px);
+  letter-spacing: -0.04em;
+  color: var(--text-soft);
+}
+
+.loader-count.loader-count--compact small {
+  margin: 3px 0 0 4px;
+  font-size: 0.34em;
+}
+
+.preloader-signature {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-top: clamp(4px, 1vh, 14px);
+}
+
+.preloader-word.preloader-word--mini {
+  overflow: visible;
+  font-size: clamp(26px, 3vw, 42px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.preloader-word--mini .preloader-letter {
+  letter-spacing: 0.16em;
+}
+
+.preloader-signature-sub {
+  color: var(--dim);
+  font-size: 5.8px;
+  letter-spacing: 0.34em;
+}
+
+@keyframes ph-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .preloader-hero {
+    height: clamp(200px, 34vh, 310px);
+  }
+
+  .preloader-hero-rings {
+    width: min(52vh, 340px);
+  }
+}
+
+@media (max-width: 640px) {
+  .preloader {
+    padding: 24px 22px 28px;
+  }
+
+  .preloader-hero {
+    height: clamp(150px, 26vh, 220px);
+  }
+
+  .preloader-counter {
+    font-size: clamp(82px, 26vw, 142px);
+  }
+
+  .preloader-hero-rings {
+    width: min(66vw, 260px);
+  }
+
+  .preloader-word.preloader-word--mini {
+    font-size: 23px;
+  }
+
+  .preloader-signature-sub {
+    display: none;
+  }
+
+  .ph-cross,
+  .ph-tick {
+    display: none;
+  }
+}
+
 /* Brand */
 .brand {
   display: inline-flex;

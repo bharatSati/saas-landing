@@ -31,6 +31,10 @@ export default function App() {
 
   const finishLoading = () => {
     setShowLoader(false);
+    window.scrollTo(0, 0);
+  };
+
+  const revealSite = () => {
     setReady(true);
     document.documentElement.classList.remove("is-loading");
     window.scrollTo(0, 0);
@@ -38,7 +42,7 @@ export default function App() {
 
   return (
     <>
-      {showLoader && <Preloader onComplete={finishLoading} />}
+      {showLoader && <Preloader onReveal={revealSite} onComplete={finishLoading} />}
       <Cursor />
       <ScrollProgress />
       <Navbar ready={ready} />
