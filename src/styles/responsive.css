@@ -602,6 +602,26 @@
     width: 100%;
   }
 
+  .command-track {
+    display: block;
+    width: 100%;
+    transform: none !important;
+  }
+
+  .command-dashboard-slide {
+    display: none;
+    opacity: 1;
+    filter: none;
+  }
+
+  .command-dashboard-slide.is-active {
+    display: block;
+  }
+
+  .command-visual-progress {
+    display: none;
+  }
+
   .dashboard-shell {
     height: 620px;
     min-height: 580px;
@@ -1158,10 +1178,6 @@
 
   .cta-orbit--three {
     display: none;
-  }
-
-  .cta-marquee-track span {
-    padding: 12px 0;
   }
 
   .footer {
@@ -2013,6 +2029,85 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .cta-ticker-meta-center {
+    display: none;
+  }
+
+  .cta-ticker-item--top {
+    font-size: clamp(38px, 6.6vw, 80px);
+  }
+
+  .cta-ticker-item--bottom {
+    font-size: clamp(23px, 3.6vw, 40px);
+  }
+}
+
+@media (max-width: 767px) {
+  .cta-ticker-meta {
+    padding: 10px 18px;
+    font-size: 6.2px;
+  }
+
+  .cta-ticker-meta-right {
+    display: none;
+  }
+
+  .cta-ticker-window {
+    padding: 16px 0 17px;
+  }
+
+  .cta-ticker-item--top {
+    gap: 10px;
+    margin-right: 28px;
+    font-size: clamp(34px, 11vw, 56px);
+  }
+
+  .cta-ticker-item--bottom {
+    gap: 12px;
+    margin-right: 22px;
+    font-size: clamp(22px, 6.4vw, 32px);
+  }
+
+  .cta-ticker-mark {
+    width: 25px;
+    height: 25px;
+  }
+
+  .cta-ticker-foot {
+    gap: 10px;
+    padding: 8px 18px;
+  }
+
+  .cta-ticker-foot .mono-label {
+    font-size: 5.6px;
+  }
+
+  .cta-inner {
+    padding-bottom: 46px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-ticker-item--top {
+    margin-right: 22px;
+    font-size: clamp(30px, 12vw, 44px);
+  }
+
+  .cta-ticker-item--bottom {
+    margin-right: 18px;
+    font-size: clamp(20px, 5.6vw, 28px);
+  }
+
+  .cta-ticker-foot .mono-label {
+    display: none;
+  }
+
+  .cta-ticker-live {
+    font-size: 6px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2024,8 +2119,12 @@
   }
 
   .marquee-track,
-  .cta-marquee-track,
-  .integration-orbit {
+  .integration-orbit,
+  .cta-ticker-beam {
     animation: none !important;
+  }
+
+  .cta-ticker-beam {
+    opacity: 0;
   }
 }

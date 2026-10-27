@@ -1,11 +1,7 @@
-import { useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-} from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Activity,
   ArrowRight,
@@ -30,6 +26,8 @@ import {
   Workflow,
   Zap,
 } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
@@ -386,28 +384,86 @@ function Dashboard({ step }) {
 
 export default function CommandCenter() {
   const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const stepProgressRef = useRef(null);
+  const railProgressRef = useRef(null);
+  const triggerRef = useRef(null);
   const [step, setStep] = useState(0);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 110,
-    damping: 28,
-    restDelta: 0.001,
-  });
 
-  useMotionValueEvent(scrollYProgress, "change", (value) => {
-    const next = Math.min(2, Math.floor(value * 3.12));
-    setStep((current) => (current === next ? current : next));
-  });
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return;
+
+    const media = gsap.matchMedia();
+
+    media.add("(min-width: 901px)", () => {
+      const context = gsap.context(() => {
+        gsap.set(stepProgressRef.current, { scaleY: 0 });
+        gsap.set(railProgressRef.current, { scaleX: 0 });
+
+        const tween = gsap.to(track, {
+          xPercent: -66.6667,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.9,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const value = self.progress;
+              const next = value < 0.25 ? 0 : value < 0.75 ? 1 : 2;
+              setStep((current) => (current === next ? current : next));
+              gsap.set(stepProgressRef.current, { scaleY: value });
+              gsap.set(railProgressRef.current, { scaleX: value });
+            },
+          },
+        });
+
+        triggerRef.current = tween.scrollTrigger;
+      }, section);
+
+      return () => {
+        triggerRef.current = null;
+        context.revert();
+      };
+    });
+
+    media.add("(max-width: 900px)", () => {
+      gsap.set(track, { xPercent: 0 });
+      gsap.set(stepProgressRef.current, { scaleY: 1 });
+      gsap.set(railProgressRef.current, { scaleX: 1 });
+    });
+
+    return () => media.revert();
+  }, []);
 
   const goToStep = (index) => {
     const section = sectionRef.current;
-    if (!section) return;
-    const total = section.offsetHeight - window.innerHeight;
-    const points = [0.08, 0.43, 0.78];
-    const top = section.offsetTop + total * points[index];
+    const trigger = triggerRef.current;
+
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      setStep(index);
+      gsap.set(stepProgressRef.current, { scaleY: (index + 1) / 3 });
+      const visual = section?.querySelector(".command-visual");
+      const top = visual
+        ? window.scrollY + visual.getBoundingClientRect().top - 84
+        : section?.offsetTop ?? 0;
+
+      if (window.__lenis) {
+        window.__lenis.scrollTo(top, { duration: 1.2 });
+      } else {
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+      return;
+    }
+
+    if (!trigger && !section) return;
+    const top = trigger
+      ? trigger.start + (trigger.end - trigger.start) * (index / 2)
+      : section.offsetTop + (section.offsetHeight - window.innerHeight) * (index / 2);
+
     if (window.__lenis) {
       window.__lenis.scrollTo(top, { duration: 1.4 });
     } else {
@@ -458,7 +514,7 @@ export default function CommandCenter() {
                 </button>
               ))}
               <span className="command-progress">
-                <motion.span style={{ scaleY: progress }} />
+                <span ref={stepProgressRef} />
               </span>
             </div>
 
@@ -470,10 +526,27 @@ export default function CommandCenter() {
 
           <div className="command-visual">
             <div className="command-visual-glow" />
-            <Dashboard step={step} />
+            <div className="command-visual-window">
+              <div className="command-track" ref={trackRef}>
+                {steps.map((item, index) => (
+                  <div
+                    className={`command-dashboard-slide ${step === index ? "is-active" : ""}`}
+                    key={item.number}
+                    aria-hidden={step !== index}
+                  >
+                    <Dashboard step={index} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="command-visual-progress">
+              <span ref={railProgressRef} />
+            </div>
             <div className="visual-caption">
               <span><span className="status-pulse" /> SYSTEM OPERATIONAL</span>
-              <span className="mono-label">LATENCY 82MS</span>
+              <span className="mono-label">
+                {steps[step].number} / 03 · {["PROMPT", "ORCHESTRATE", "SHIP"][step]}
+              </span>
             </div>
           </div>
         </div>

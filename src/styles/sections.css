@@ -2523,6 +2523,50 @@
   pointer-events: none;
 }
 
+.command-visual-window {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.command-track {
+  display: flex;
+  width: 300%;
+  will-change: transform;
+}
+
+.command-dashboard-slide {
+  min-width: 0;
+  flex: 0 0 33.3333%;
+  opacity: 0.56;
+  filter: saturate(0.58) brightness(0.74);
+  transition:
+    opacity 0.45s ease,
+    filter 0.45s ease;
+}
+
+.command-dashboard-slide.is-active {
+  opacity: 1;
+  filter: none;
+}
+
+.command-visual-progress {
+  position: relative;
+  height: 2px;
+  margin-top: 13px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.command-visual-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(200, 255, 61, 0.2), var(--lime) 55%, #b8e8ff);
+  box-shadow: 0 0 12px rgba(200, 255, 61, 0.35);
+}
+
 .visual-caption {
   display: flex;
   align-items: center;
@@ -3214,12 +3258,38 @@
   font-size: 6px;
 }
 
+/* Shared pointer spotlight for card grids */
+.metric-card::before,
+.testimonial-card::before,
+.pricing-card::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(200, 255, 61, 0.085),
+    transparent 68%
+  );
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.metric-card:hover::before,
+.testimonial-card:hover::before,
+.pricing-card:hover::before {
+  opacity: 1;
+}
+
 /* ============================================================
    CTA
    ============================================================ */
 .cta-section {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
   min-height: 92vh;
   overflow: hidden;
   align-items: center;
@@ -3314,9 +3384,10 @@
   position: relative;
   z-index: 2;
   display: flex;
+  width: 100%;
   align-items: center;
   flex-direction: column;
-  padding-bottom: 100px;
+  padding-bottom: 56px;
   text-align: center;
 }
 
@@ -3521,38 +3592,260 @@
   color: var(--lime);
 }
 
-.cta-marquee {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.cta-ticker {
+  position: relative;
+  z-index: 2;
+  width: 100%;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background:
+    radial-gradient(ellipse 55% 150% at 50% 115%, rgba(200, 255, 61, 0.065), transparent 62%),
+    #050605;
+  pointer-events: auto;
+}
+
+.cta-ticker::before {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 96px 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  content: "";
   pointer-events: none;
 }
 
-.cta-marquee-track {
+.cta-ticker-meta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px clamp(20px, 4.2vw, 58px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 6.8px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.cta-ticker-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-soft);
+}
+
+.cta-ticker-live .status-pulse {
+  width: 5px;
+  height: 5px;
+}
+
+.cta-ticker-meta-center {
+  color: var(--muted);
+}
+
+.cta-ticker-meta-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dim);
+}
+
+.cta-ticker-meta-right i {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(200, 255, 61, 0.5), transparent);
+}
+
+.cta-ticker-window {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  padding: clamp(18px, 2vw, 30px) 0 clamp(15px, 1.7vw, 24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  background:
+    linear-gradient(180deg, rgba(200, 255, 61, 0.028), transparent 42%, rgba(122, 140, 255, 0.018)),
+    rgba(0, 0, 0, 0.16);
+  mask-image: linear-gradient(90deg, transparent, #000 4.5%, #000 95.5%, transparent);
+  transform: skewY(-1.1deg);
+  transform-origin: center center;
+}
+
+.cta-ticker-beam {
+  position: absolute;
+  top: -24%;
+  bottom: -24%;
+  left: -18%;
+  z-index: 1;
+  width: clamp(90px, 13vw, 230px);
+  transform: skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(200, 255, 61, 0.035) 34%,
+    rgba(200, 255, 61, 0.12) 50%,
+    rgba(200, 255, 61, 0.035) 66%,
+    transparent
+  );
+  pointer-events: none;
+  animation: cta-ticker-beam 7.5s linear infinite;
+}
+
+.cta-ticker-beam::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: rgba(200, 255, 61, 0.22);
+  box-shadow: 0 0 18px rgba(200, 255, 61, 0.28);
+  content: "";
+}
+
+@keyframes cta-ticker-beam {
+  0% {
+    left: -18%;
+  }
+  100% {
+    left: 112%;
+  }
+}
+
+.cta-ticker-track {
   display: flex;
   width: max-content;
-  animation: marquee-scroll 38s linear infinite;
+  will-change: transform;
 }
 
-.cta-marquee-track span {
-  padding: 14px 0;
-  color: transparent;
-  font-size: clamp(38px, 5.5vw, 82px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.05em;
+.cta-ticker-track--top {
+  align-items: center;
+}
+
+.cta-ticker-track--bottom {
+  align-items: center;
+  margin-top: clamp(3px, 0.5vw, 8px);
+}
+
+.cta-ticker-row {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.cta-ticker-item {
+  display: inline-flex;
+  align-items: center;
   white-space: nowrap;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.09);
 }
 
-.cta-marquee-track i {
-  margin: 0 22px;
-  color: var(--lime);
-  font-style: normal;
+.cta-ticker-item--top {
+  gap: clamp(12px, 2vw, 26px);
+  margin-right: clamp(28px, 4.6vw, 72px);
+  color: transparent;
+  font-size: clamp(40px, 5.8vw, 94px);
+  font-weight: 500;
+  line-height: 0.84;
+  letter-spacing: -0.06em;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.17);
+  transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
+}
+
+.cta-ticker-item--top.is-solid {
+  background: linear-gradient(180deg, #f4ffe0 0%, #c8ff3d 62%, #7aa817 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   -webkit-text-stroke: 0;
+}
+
+.cta-ticker-item--top:hover {
+  color: var(--lime);
+  -webkit-text-stroke-color: transparent;
+}
+
+.cta-ticker-item--bottom {
+  gap: clamp(15px, 2.2vw, 30px);
+  margin-right: clamp(24px, 3.6vw, 56px);
+  color: rgba(200, 255, 61, 0.72);
+  font-family: var(--serif);
+  font-size: clamp(25px, 3.4vw, 50px);
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-shadow: 0 0 32px rgba(200, 255, 61, 0.12);
+}
+
+.cta-ticker-item--bottom:hover {
+  color: #eaffc4;
+}
+
+.cta-ticker-mark {
+  display: inline-grid;
+  width: clamp(26px, 3.2vw, 46px);
+  height: clamp(26px, 3.2vw, 46px);
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(200, 255, 61, 0.22);
+  border-radius: 50%;
+  background: rgba(200, 255, 61, 0.035);
+  box-shadow: inset 0 0 18px rgba(200, 255, 61, 0.035), 0 0 22px rgba(200, 255, 61, 0.06);
+  color: var(--lime);
+  -webkit-text-stroke: 0;
+}
+
+.cta-ticker-mark svg {
+  width: 44%;
+  height: 44%;
+}
+
+.cta-ticker-diamond {
+  width: clamp(5px, 0.55vw, 8px);
+  height: clamp(5px, 0.55vw, 8px);
+  flex: 0 0 auto;
+  transform: rotate(45deg);
+  background: var(--lime);
+  box-shadow: 0 0 14px rgba(200, 255, 61, 0.55);
+  opacity: 0.72;
+}
+
+.cta-ticker-foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 9px clamp(20px, 4.2vw, 58px) 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+  background: rgba(3, 8, 3, 0.55);
+  color: var(--dim);
+}
+
+.cta-ticker-foot .mono-label {
+  flex: 0 0 auto;
+  font-size: 6.2px;
+  letter-spacing: 0.12em;
+}
+
+.cta-ticker-progress {
+  position: relative;
+  height: 1px;
+  flex: 1;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.cta-ticker-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, transparent, rgba(200, 255, 61, 0.7) 20%, var(--lime));
+  box-shadow: 0 0 10px rgba(200, 255, 61, 0.4);
 }
 
 /* ============================================================

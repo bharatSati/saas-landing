@@ -1,11 +1,162 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, ArrowUpRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Asterisk, ArrowRight, ArrowUpRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
 import Reveal from "./Reveal";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const tickerPhrases = [
+  "BUILD FASTER",
+  "THINK BIGGER",
+  "MOVE AS ONE",
+  "SHIP ANYTHING",
+  "STAY AHEAD",
+  "OWN THE OUTCOME",
+];
+
+const tickerSerifPhrases = [
+  "Make the impossible routine",
+  "Turn intent into output",
+  "Compound your ambition",
+  "Own the next decade",
+  "Build at the speed of thought",
+];
+
+function TickerRow({ variant = "top" }) {
+  const phrases = variant === "top" ? tickerPhrases : tickerSerifPhrases;
+
+  return (
+    <div className={`cta-ticker-row cta-ticker-row--${variant}`}>
+      {phrases.map((phrase, index) => (
+        <span
+          className={`cta-ticker-item cta-ticker-item--${variant} ${
+            variant === "top" && index % 3 === 1 ? "is-solid" : ""
+          }`}
+          key={`${variant}-${phrase}-${index}`}
+        >
+          {phrase}
+          {variant === "top" ? (
+            <span className="cta-ticker-mark">
+              <Asterisk size={20} strokeWidth={1.5} />
+            </span>
+          ) : (
+            <span className="cta-ticker-diamond" />
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function CTA() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const ticker = useRef(null);
+  const tickerTrackTop = useRef(null);
+  const tickerTrackBottom = useRef(null);
+  const tickerProgress = useRef(null);
+
+  useEffect(() => {
+    const root = ticker.current;
+    const topTrack = tickerTrackTop.current;
+    const bottomTrack = tickerTrackBottom.current;
+    const progress = tickerProgress.current;
+    if (!root || !topTrack || !bottomTrack || !progress) return;
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(progress, { scaleX: 1 });
+      return;
+    }
+
+    const topLoop = gsap.to(topTrack, {
+      xPercent: -50,
+      duration: 48,
+      ease: "none",
+      repeat: -1,
+    });
+
+    gsap.set(bottomTrack, { xPercent: -50 });
+    const bottomLoop = gsap.to(bottomTrack, {
+      xPercent: 0,
+      duration: 62,
+      ease: "none",
+      repeat: -1,
+    });
+
+    const marks = gsap.to(root.querySelectorAll(".cta-ticker-mark svg"), {
+      rotation: 360,
+      duration: 18,
+      ease: "none",
+      repeat: -1,
+      transformOrigin: "50% 50%",
+    });
+
+    let boost = 0;
+    let hovered = false;
+
+    const tick = () => {
+      boost *= 0.9;
+      if (hovered) return;
+      topLoop.timeScale(1 + boost);
+      bottomLoop.timeScale(1 + boost * 0.78);
+      marks.timeScale(1 + boost * 0.45);
+    };
+    gsap.ticker.add(tick);
+
+    const velocityTrigger = ScrollTrigger.create({
+      trigger: root,
+      start: "top bottom",
+      end: "bottom top",
+      onUpdate: (self) => {
+        boost = Math.min(Math.abs(self.getVelocity()) / 900, 2.8);
+      },
+    });
+
+    const progressTween = gsap.fromTo(
+      progress,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top 90%",
+          end: "bottom bottom",
+          scrub: 0.5,
+        },
+      },
+    );
+
+    const onEnter = () => {
+      hovered = true;
+      topLoop.pause();
+      bottomLoop.pause();
+      marks.pause();
+    };
+    const onLeave = () => {
+      hovered = false;
+      topLoop.resume();
+      bottomLoop.resume();
+      marks.resume();
+    };
+
+    root.addEventListener("pointerenter", onEnter);
+    root.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      root.removeEventListener("pointerenter", onEnter);
+      root.removeEventListener("pointerleave", onLeave);
+      gsap.ticker.remove(tick);
+      velocityTrigger.kill();
+      progressTween.scrollTrigger?.kill();
+      progressTween.kill();
+      topLoop.kill();
+      bottomLoop.kill();
+      marks.kill();
+    };
+  }, []);
 
   const submit = (event) => {
     event.preventDefault();
@@ -111,10 +262,36 @@ export default function CTA() {
         </Reveal>
       </div>
 
-      <div className="cta-marquee" aria-hidden="true">
-        <div className="cta-marquee-track">
-          <span>BUILD FASTER <i>✳</i> THINK BIGGER <i>✳</i> STAY AHEAD <i>✳</i> BUILD FASTER <i>✳</i> THINK BIGGER <i>✳</i> STAY AHEAD <i>✳</i></span>
-          <span>BUILD FASTER <i>✳</i> THINK BIGGER <i>✳</i> STAY AHEAD <i>✳</i> BUILD FASTER <i>✳</i> THINK BIGGER <i>✳</i> STAY AHEAD <i>✳</i></span>
+      <div className="cta-ticker" ref={ticker} aria-hidden="true">
+        <div className="cta-ticker-meta">
+          <span className="cta-ticker-live">
+            <span className="status-pulse" />
+            MOMENTUM FEED
+          </span>
+          <span className="cta-ticker-meta-center">
+            ALWAYS COMPOUNDING · 12.4K TASKS / MIN · 99.99% UPTIME
+          </span>
+          <span className="cta-ticker-meta-right">
+            HOVER TO PAUSE <i /> SCROLL TO ACCELERATE
+          </span>
+        </div>
+        <div className="cta-ticker-window">
+          <div className="cta-ticker-beam" />
+          <div className="cta-ticker-track cta-ticker-track--top" ref={tickerTrackTop}>
+            <TickerRow variant="top" />
+            <TickerRow variant="top" />
+          </div>
+          <div className="cta-ticker-track cta-ticker-track--bottom" ref={tickerTrackBottom}>
+            <TickerRow variant="bottom" />
+            <TickerRow variant="bottom" />
+          </div>
+        </div>
+        <div className="cta-ticker-foot">
+          <span className="mono-label">KINETIC / 01</span>
+          <span className="cta-ticker-progress">
+            <span ref={tickerProgress} />
+          </span>
+          <span className="mono-label">VELOCITY LINKED</span>
         </div>
       </div>
     </section>
