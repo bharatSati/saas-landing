@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Tilt3D from "./Tilt3D";
 import {
   Activity,
   ArrowRight,
@@ -475,6 +476,7 @@ export default function CommandCenter() {
     <section className="command-section" id="platform" ref={sectionRef}>
       <div className="command-sticky">
         <div className="command-bg" />
+        <div className="command-floor" aria-hidden="true" />
         <div className="command-noise" />
         <div className="container command-layout">
           <div className="command-side">
@@ -526,7 +528,7 @@ export default function CommandCenter() {
 
           <div className="command-visual">
             <div className="command-visual-glow" />
-            <div className="command-visual-window">
+            <Tilt3D className="command-visual-window" max={5} scale={1.006}>
               <div className="command-track" ref={trackRef}>
                 {steps.map((item, index) => (
                   <div
@@ -538,7 +540,7 @@ export default function CommandCenter() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Tilt3D>
             <div className="command-visual-progress">
               <span ref={railProgressRef} />
             </div>

@@ -202,19 +202,6 @@ export default function ScrollEffects({ ready }) {
           },
         });
       });
-
-      gsap.from(".metric-spark i", {
-        scaleY: 0,
-        transformOrigin: "bottom center",
-        duration: 0.7,
-        stagger: 0.05,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".metrics-section",
-          start: "top 70%",
-          once: true,
-        },
-      });
     });
 
     const spotlightSelector = ".metric-card, .testimonial-card, .pricing-card";

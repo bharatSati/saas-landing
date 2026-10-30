@@ -9,6 +9,7 @@ import "./styles/global.css";
 import "./styles/sections.css";
 import "./styles/dashboard.css";
 import "./styles/responsive.css";
+import "./styles/three.css";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

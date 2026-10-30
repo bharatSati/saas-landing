@@ -14,6 +14,7 @@ import Pricing from "./components/Pricing";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
 import ScrollEffects from "./components/ScrollEffects";
+import Atmosphere from "./components/three/Atmosphere";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -43,6 +44,7 @@ export default function App() {
   return (
     <>
       {showLoader && <Preloader onReveal={revealSite} onComplete={finishLoading} />}
+      <Atmosphere />
       <Cursor />
       <ScrollProgress />
       <Navbar ready={ready} />

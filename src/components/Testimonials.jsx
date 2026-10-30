@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { ArrowUpRight, Quote, Star } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import Tilt3D from "./Tilt3D";
 
 const testimonials = [
   {
@@ -36,46 +37,51 @@ const testimonials = [
 function TestimonialCard({ item, index }) {
   return (
     <motion.article
-      className={`testimonial-card ${item.featured ? "testimonial-card--featured" : ""}`}
+      className={`tilt-slot testimonial-slot ${item.featured ? "testimonial-slot--featured" : ""}`}
       initial={{ opacity: 0, y: 34 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.85, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="testimonial-top">
-        <span className="quote-icon">
-          <Quote size={17} fill="currentColor" strokeWidth={0} />
-        </span>
-        <div className="testimonial-stars">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
-          ))}
+      <Tilt3D
+        className={`testimonial-card ${item.featured ? "testimonial-card--featured" : ""}`}
+        max={7}
+      >
+        <div className="testimonial-top">
+          <span className="quote-icon">
+            <Quote size={17} fill="currentColor" strokeWidth={0} />
+          </span>
+          <div className="testimonial-stars">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
+            ))}
+          </div>
         </div>
-      </div>
 
-      <blockquote>
-        &ldquo;{item.quote}&rdquo;
-      </blockquote>
+        <blockquote>
+          &ldquo;{item.quote}&rdquo;
+        </blockquote>
 
-      {item.featured && (
-        <div className="testimonial-metric">
-          <span className="mono-label">RESULT</span>
-          <strong>{item.metric}</strong>
-          <span>{item.metricLabel}</span>
-          <span className="metric-line" />
+        {item.featured && (
+          <div className="testimonial-metric">
+            <span className="mono-label">RESULT</span>
+            <strong>{item.metric}</strong>
+            <span>{item.metricLabel}</span>
+            <span className="metric-line" />
+          </div>
+        )}
+
+        <div className="testimonial-author">
+          <span className="testimonial-avatar" style={{ background: item.gradient }}>
+            {item.initials}
+          </span>
+          <div>
+            <strong>{item.name}</strong>
+            <span>{item.role}</span>
+          </div>
+          <span className="testimonial-arrow"><ArrowUpRight size={16} /></span>
         </div>
-      )}
-
-      <div className="testimonial-author">
-        <span className="testimonial-avatar" style={{ background: item.gradient }}>
-          {item.initials}
-        </span>
-        <div>
-          <strong>{item.name}</strong>
-          <span>{item.role}</span>
-        </div>
-        <span className="testimonial-arrow"><ArrowUpRight size={16} /></span>
-      </div>
+      </Tilt3D>
     </motion.article>
   );
 }

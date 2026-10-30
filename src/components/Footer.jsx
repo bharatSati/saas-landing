@@ -57,6 +57,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-grid-bg" />
+      <div className="footer-horizon" aria-hidden="true" />
       <div className="container">
         <div className="footer-top">
           <Reveal className="footer-brand" delay={0.02}>

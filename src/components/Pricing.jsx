@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Check, Sparkles } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import Tilt3D from "./Tilt3D";
 import Magnetic from "./Magnetic";
 import { scrollToSection } from "../hooks/useSmoothScroll";
 
@@ -105,78 +106,83 @@ export default function Pricing() {
             const price = annual ? plan.annual : plan.monthly;
             return (
               <motion.article
-                className={`pricing-card ${plan.popular ? "pricing-card--popular" : ""}`}
+                className="tilt-slot pricing-slot"
                 key={plan.name}
                 initial={{ opacity: 0, y: 38 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.85, delay: index * 0.09, ease: [0.16, 1, 0.3, 1] }}
               >
-                {plan.popular && (
-                  <div className="popular-badge">
-                    <Sparkles size={12} />
-                    MOST POPULAR
-                  </div>
-                )}
-
-                <div className="pricing-head">
-                  <div>
-                    <h3>{plan.name}</h3>
-                    <p>{plan.tagline}</p>
-                  </div>
-                  <span className="plan-index mono-label">0{index + 1}</span>
-                </div>
-
-                <div className="plan-price">
-                  {price === null ? (
-                    <span className="plan-custom">Custom</span>
-                  ) : (
-                    <>
-                      <span className="plan-currency">$</span>
-                      <AnimatePresence mode="wait" initial={false}>
-                        <motion.span
-                          key={`${plan.name}-${price}-${annual}`}
-                          className="plan-amount"
-                          initial={{ y: 18, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -18, opacity: 0 }}
-                          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                        >
-                          {price}
-                        </motion.span>
-                      </AnimatePresence>
-                      <span className="plan-period">
-                        / user / mo
-                        {annual && price > 0 && <small>billed annually</small>}
-                      </span>
-                    </>
+                <Tilt3D
+                  className={`pricing-card ${plan.popular ? "pricing-card--popular" : ""}`}
+                  max={8}
+                >
+                  {plan.popular && (
+                    <div className="popular-badge">
+                      <Sparkles size={12} />
+                      MOST POPULAR
+                    </div>
                   )}
-                </div>
 
-                <Magnetic strength={0.12}>
-                  <button
-                    type="button"
-                    className={`button button--wide ${plan.popular ? "button--lime" : "button--outline"}`}
-                    onClick={() => scrollToSection("#cta")}
-                  >
-                    {plan.cta}
-                    <ArrowUpRight size={16} />
-                  </button>
-                </Magnetic>
+                  <div className="pricing-head">
+                    <div>
+                      <h3>{plan.name}</h3>
+                      <p>{plan.tagline}</p>
+                    </div>
+                    <span className="plan-index mono-label">0{index + 1}</span>
+                  </div>
 
-                <div className="pricing-divider" />
+                  <div className="plan-price">
+                    {price === null ? (
+                      <span className="plan-custom">Custom</span>
+                    ) : (
+                      <>
+                        <span className="plan-currency">$</span>
+                        <AnimatePresence mode="wait" initial={false}>
+                          <motion.span
+                            key={`${plan.name}-${price}-${annual}`}
+                            className="plan-amount"
+                            initial={{ y: 18, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -18, opacity: 0 }}
+                            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                          >
+                            {price}
+                          </motion.span>
+                        </AnimatePresence>
+                        <span className="plan-period">
+                          / user / mo
+                          {annual && price > 0 && <small>billed annually</small>}
+                        </span>
+                      </>
+                    )}
+                  </div>
 
-                <span className="pricing-features-label mono-label">WHAT&apos;S INCLUDED</span>
-                <ul className="pricing-features">
-                  {plan.features.map((feature) => (
-                    <li key={feature}>
-                      <span><Check size={10} strokeWidth={3} /></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                  <Magnetic strength={0.12}>
+                    <button
+                      type="button"
+                      className={`button button--wide ${plan.popular ? "button--lime" : "button--outline"}`}
+                      onClick={() => scrollToSection("#cta")}
+                    >
+                      {plan.cta}
+                      <ArrowUpRight size={16} />
+                    </button>
+                  </Magnetic>
 
-                <p className="pricing-note">{plan.note}</p>
+                  <div className="pricing-divider" />
+
+                  <span className="pricing-features-label mono-label">WHAT&apos;S INCLUDED</span>
+                  <ul className="pricing-features">
+                    {plan.features.map((feature) => (
+                      <li key={feature}>
+                        <span><Check size={10} strokeWidth={3} /></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="pricing-note">{plan.note}</p>
+                </Tilt3D>
               </motion.article>
             );
           })}

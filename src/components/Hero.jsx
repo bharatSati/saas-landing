@@ -10,7 +10,7 @@ import {
   Star,
 } from "lucide-react";
 import gsap from "gsap";
-import OrbScene from "./OrbScene";
+import HeroCoreScene from "./HeroCoreScene";
 import Magnetic from "./Magnetic";
 import { scrollToSection } from "../hooks/useSmoothScroll";
 
@@ -232,7 +232,7 @@ export default function Hero({ ready }) {
         <div className="hero-visual">
           <div className="hero-visual-inner">
             <div className="hero-visual-meta mono-label">
-              <span>SYSTEM / ORBITAL CORE</span>
+              <span>SYSTEM / NEURAL CORE</span>
               <span className="hero-visual-meta-live"><i /> LIVE RENDER</span>
             </div>
 
@@ -240,12 +240,7 @@ export default function Hero({ ready }) {
               <div className="orb-aura orb-aura--one" />
               <div className="orb-aura orb-aura--two" />
               <div className="orb-glow" />
-              <div className="orb-grid" />
-              <div className="orb-ring orb-ring--one" />
-              <div className="orb-ring orb-ring--two" />
-              <div className="orb-sweep" />
-              <OrbScene />
-              <div className="orb-scan" />
+              <HeroCoreScene />
 
               <div className="orb-reticle" aria-hidden="true">
                 <span className="reticle-corner reticle-corner--tl" />
@@ -261,7 +256,7 @@ export default function Hero({ ready }) {
                 <span>CORE</span><strong>AX-09</strong>
               </div>
               <div className="orb-readout orb-readout--se mono-label">
-                <span>SPIN</span><strong>0.84</strong>
+                <span>STATE</span><strong>SYNCED</strong>
               </div>
             </div>
 
@@ -329,11 +324,12 @@ export default function Hero({ ready }) {
 
             <div className="orb-instruction mono-label">
               <Move3D size={13} />
-              <span>DRAG TO ROTATE</span>
+              <span>DRAG TO ORBIT</span>
               <i />
               <ScanLine size={12} />
-              <span>CLICK TO SCAN</span>
+              <span>CLICK TO PULSE</span>
               <Activity size={12} />
+              <span>MOVE TO DEFORM</span>
             </div>
 
             <div className="hero-orbit-label mono-label">

@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Asterisk, ArrowRight, ArrowUpRight, Check, CornerDownLeft, Sparkles } from "lucide-react";
 import Reveal from "./Reveal";
+import CTAScene from "./three/CTAScene";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -168,9 +169,7 @@ export default function CTA() {
     <section className="cta-section" id="cta">
       <div className="cta-grid" />
       <div className="cta-glow" />
-      <div className="cta-orbit cta-orbit--one" />
-      <div className="cta-orbit cta-orbit--two" />
-      <div className="cta-orbit cta-orbit--three" />
+      <CTAScene />
 
       <div className="container cta-inner">
         <Reveal className="cta-kicker">

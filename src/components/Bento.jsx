@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { useRive } from "@rive-app/react-canvas";
 import {
@@ -6,42 +6,28 @@ import {
   ArrowUpRight,
   Bot,
   Check,
-  Cloud,
   Code2,
-  Database,
-  Figma,
   Fingerprint,
-  Github,
-  Mail,
   ShieldCheck,
-  Slack,
   Sparkles,
   Workflow,
   Zap,
 } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import Tilt3D from "./Tilt3D";
+import IntegrationScene from "./three/IntegrationScene";
 
 function SpotlightCard({ children, className = "", delay = 0 }) {
-  const ref = useRef(null);
-
-  const onMove = (event) => {
-    const rect = ref.current.getBoundingClientRect();
-    ref.current.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-    ref.current.style.setProperty("--my", `${event.clientY - rect.top}px`);
-  };
-
   return (
     <motion.div
-      ref={ref}
-      className={`bento-card ${className}`}
-      onMouseMove={onMove}
+      className={`tilt-slot ${className}`}
       initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.18 }}
       transition={{ duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] }}
     >
-      {children}
+      <Tilt3D className="bento-card">{children}</Tilt3D>
     </motion.div>
   );
 }
@@ -254,15 +240,6 @@ function TelemetryCard() {
   );
 }
 
-const integrations = [
-  { icon: Slack, label: "Slack" },
-  { icon: Github, label: "GitHub" },
-  { icon: Figma, label: "Figma" },
-  { icon: Database, label: "Postgres" },
-  { icon: Mail, label: "Gmail" },
-  { icon: Cloud, label: "S3" },
-];
-
 function IntegrationsCard() {
   return (
     <SpotlightCard className="bento-card--integrations" delay={0.08}>
@@ -281,28 +258,7 @@ function IntegrationsCard() {
       </div>
 
       <div className="integration-visual">
-        <span className="orbit-ring orbit-ring--one" />
-        <span className="orbit-ring orbit-ring--two" />
-        <span className="orbit-ring orbit-ring--three" />
-        <div className="integration-core">
-          <span className="brand-mark brand-mark--mini">
-            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <path d="M6.5 21.5 14 5l7.5 16.5h-4.1L14 13.3l-3.4 8.2H6.5Z" fill="currentColor" />
-              <circle cx="21.4" cy="6.3" r="2.1" fill="currentColor" />
-            </svg>
-          </span>
-        </div>
-        <div className="integration-orbit">
-          {integrations.map(({ icon: Icon, label }, index) => (
-            <span
-              className={`integration-chip integration-chip--${index + 1}`}
-              key={label}
-              title={label}
-            >
-              <Icon size={17} strokeWidth={1.6} />
-            </span>
-          ))}
-        </div>
+        <IntegrationScene />
         <span className="integration-count mono-label">+200 MORE</span>
       </div>
     </SpotlightCard>

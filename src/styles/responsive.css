@@ -1485,10 +1485,6 @@
     font-size: 11.5px;
   }
 
-  .metric-spark {
-    margin-top: 13px;
-  }
-
   .metric-card::after {
     left: 16px;
   }

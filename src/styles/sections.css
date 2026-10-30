@@ -2700,28 +2700,6 @@
   line-height: 1.5;
 }
 
-.metric-spark {
-  display: flex;
-  height: 18px;
-  align-items: flex-end;
-  gap: 2px;
-  margin-top: 17px;
-}
-
-.metric-spark i {
-  width: 100%;
-  border-radius: 1px;
-  background: rgba(200, 255, 61, 0.22);
-}
-
-.metric-spark i:nth-child(1) { height: 35%; }
-.metric-spark i:nth-child(2) { height: 52%; }
-.metric-spark i:nth-child(3) { height: 48%; }
-.metric-spark i:nth-child(4) { height: 70%; }
-.metric-spark i:nth-child(5) { height: 61%; }
-.metric-spark i:nth-child(6) { height: 87%; }
-.metric-spark i:nth-child(7) { height: 100%; background: var(--lime); }
-
 .metrics-footer {
   position: relative;
   z-index: 1;

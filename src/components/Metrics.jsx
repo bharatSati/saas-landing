@@ -4,6 +4,8 @@ import { motion, useInView } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
+import Tilt3D from "./Tilt3D";
+import MetricsScene from "./three/MetricsScene";
 
 function Counter({ value, decimals = 0, prefix = "", suffix = "" }) {
   const ref = useRef(null);
@@ -69,6 +71,7 @@ export default function Metrics() {
     <section className="metrics-section" aria-label="Axon by the numbers">
       <div className="metrics-orb" />
       <div className="metrics-grid-bg" />
+      <MetricsScene />
       <div className="container">
         <SectionHeading
           eyebrow="THE COMPOUND EFFECT"
@@ -85,26 +88,25 @@ export default function Metrics() {
         <div className="metrics-grid">
           {stats.map((stat, index) => (
             <motion.div
-              className="metric-card"
+              className="tilt-slot metric-slot"
               key={stat.label}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.8, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="metric-index mono-label">0{index + 1}</span>
-              <div className="metric-value">
-                <Counter
-                  value={stat.value}
-                  decimals={stat.decimals}
-                  suffix={stat.suffix}
-                />
-              </div>
-              <strong>{stat.label}</strong>
-              <p>{stat.note}</p>
-              <span className="metric-spark">
-                <i /><i /><i /><i /><i /><i /><i />
-              </span>
+              <Tilt3D className="metric-card" max={11}>
+                <span className="metric-index mono-label">0{index + 1}</span>
+                <div className="metric-value">
+                  <Counter
+                    value={stat.value}
+                    decimals={stat.decimals}
+                    suffix={stat.suffix}
+                  />
+                </div>
+                <strong>{stat.label}</strong>
+                <p>{stat.note}</p>
+              </Tilt3D>
             </motion.div>
           ))}
         </div>
